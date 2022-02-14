@@ -1,0 +1,1 @@
+python-weekend-entry-task
