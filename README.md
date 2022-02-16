@@ -1,3 +1,11 @@
+# Ideas for the final README file
+script should be called without any command line option e.g. python3 -c solution.py (this is bc of sys.argv[0])
+
+# Ideas for the code itself
+might import sys.argv as argv -- does it work?
+
+
+
 # Python weekend entry task
 
 **Write a python script/module/package, that for a given flight data in a form of `csv` file (check the examples), prints out a structured list of all flight combinations for a selected route between airports A -> B, sorted by the final price for the trip.**
