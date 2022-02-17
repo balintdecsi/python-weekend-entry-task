@@ -1,3 +1,4 @@
+from email.policy import default
 import sys
 import re
 from collections import defaultdict
@@ -17,7 +18,7 @@ with open(ds_file, "r") as f:
     for line in f:
         counter += 1
         if counter == 1:
-            # header = line.split(",")
+            assert re.fullmatch(r'[a-z_]+(,[a-z_]+){7}\n', line) != None, "Does not have header or header does not follow convention described in README"
             continue
         else:
             record = re.fullmatch(
@@ -34,3 +35,10 @@ with open(ds_file, "r") as f:
                 )
             assert record != None, "Input data does not follow convention described in README"
             adj_dict[record[2]][record[3]].append([record[1],dt.fromisoformat(record[4]),dt.fromisoformat(record[5]),float(record[6]),float(record[8]),int(record[10])])
+
+# way there
+output = dict([])
+
+
+
+# return
