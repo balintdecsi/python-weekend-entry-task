@@ -1,5 +1,6 @@
 # Ideas for the final README file
 script should be called without any command line option e.g. python3 -c solution.py (this is bc of sys.argv[0])
+should contain header!
 
 # Ideas for the code itself
 might import sys.argv as argv -- does it work?
