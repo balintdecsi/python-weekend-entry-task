@@ -1,16 +1,49 @@
-from email.policy import default
 import sys
 import re
 from collections import defaultdict
 from datetime import datetime as dt
 from datetime import timedelta as td
-from xml.dom.xmlbuilder import _DOMInputSourceStringDataType
+from typing import Type
+
+def route_planner(
+    route_flights, prev_dest, upd_adj_dict):
+    prev_flight_arr = dt.fromisoformat(route_flights["flights"][-1]["arrival"])
+
+    if prev_dest == arr:
+        return route_flights
+    else:
+        airport_flights = []
+        for next_dest, next_flights in upd_adj_dict[prev_dest].items():
+            if next_dest in map(lambda x: x["origin"], route_flights["flights"]):
+                continue
+            else:
+                for next_flight in next_flights:
+                    if next_flight[1] < (prev_flight_arr + td(hours=1)) or next_flight[1] > (prev_flight_arr + td(hours=6)) or next_flight[5] < bags:
+                        continue
+                    else:
+                        route_flights["flights"].append({
+                            "flight_no": next_flight[0],
+                            "origin": prev_dest,
+                            "destination": next_dest,
+                            "departure": next_flight[1].isoformat(),
+                            "arrival": next_flight[2].isoformat(),
+                            "base_price": next_flight[3],
+                            "bag_price": next_flight[4] * bags,
+                            "bags_allowed": next_flight[5]
+                        })
+                        route_flights["bags_allowed"] = min(ext_flight[5],route_flights["bags_allowed"])
+                        route_flights["destination"] = next_dest
+                        route_flights["total_price"] += next_flight[3] * bags
+                        route_flights["travel_time"] = str(next_flight[2]-dt.fromisoformat(route_flights["flights"][0]["departure"]))
+                        airport_flights.append(route_planner(route_flights, next_dest, upd_adj_dict))
+        return airport_flights
 
 ds_file = sys.argv[1]
 dep = sys.argv[2]
 arr = sys.argv[3]
-bags = sys.argv[4]
+bags = int(sys.argv[4])
 is_return = sys.argv[5]
+
 
 counter = 0
 adj_dict = defaultdict(lambda: defaultdict(list))
@@ -64,36 +97,13 @@ for dest, flights in adj_dict[dep].items():
             "travel_time": str(flight[2]-flight[1])
         }
         total_flights.append(route_planner(route_flights_init,dest,adj_dict))
-total_flights = [flight if flight["destination"] == arr else [] for flight in total_flights]
+output_flights = []
+for flight in total_flights:
+    try:
+        if flight["destination"] == arr:
+            output_flights.append(flight)
+    except TypeError:
+        continue
 
-def route_planner(route_flights, prev_dest, upd_adj_dict):
-    prev_flight_arr = route_flights["flights"][-1][2]
 
-    if prev_dest == arr:
-        return route_flights
-    else:
-        airport_flights = []
-        for next_dest, next_flights in upd_adj_dict[prev_dest].items():
-            if next_dest in map(lambda x: x["origin"], route_flights["flights"]):
-                continue
-            else:
-                for next_flight in next_flights:
-                    if next_flight[1] < (prev_flight_arr + td(hours=1)) or next_flight[1] > (prev_flight_arr + td(hourse=6)) or next_flight[5] < bags:
-                        continue
-                    else:
-                        route_flights["flights"].append({
-                            "flight_no": next_flight[0],
-                            "origin": prev_dest,
-                            "destination": next_dest,
-                            "departure": next_flight[1].isoformat(),
-                            "arrival": next_flight[2].isoformat(),
-                            "base_price": next_flight[3],
-                            "bag_price": next_flight[4] * bags,
-                            "bags_allowed": next_flight[5]
-                        })
-                        route_flights["bags_allowed"] = min(ext_flight[5],route_flights["bags_allowed"])
-                        route_flights["destination"] = next_dest
-                        route_flights["total_price"] += next_flight[3] * bags
-                        route_flights["travel_time"] = str(next_flight[2]-dt.fromisoformat(route_flights["flights"][0]["departure"]))
-                        airport_flights.append(route_planner(route_flights, next_dest, upd_adj_dict))
-        return airport_flights
+print(output_flights)   
