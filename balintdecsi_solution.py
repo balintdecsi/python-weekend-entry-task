@@ -3,10 +3,9 @@ import re
 from collections import defaultdict
 from datetime import datetime as dt
 from datetime import timedelta as td
-from typing import Type
+from json import dumps
 
-def route_planner(
-    route_flights, prev_dest, upd_adj_dict):
+def route_planner(route_flights, prev_dest, upd_adj_dict):
     prev_flight_arr = dt.fromisoformat(route_flights["flights"][-1]["arrival"])
 
     if prev_dest == arr:
@@ -31,12 +30,19 @@ def route_planner(
                             "bag_price": next_flight[4] * bags,
                             "bags_allowed": next_flight[5]
                         })
-                        route_flights["bags_allowed"] = min(ext_flight[5],route_flights["bags_allowed"])
+                        route_flights["bags_allowed"] = min(next_flight[5],route_flights["bags_allowed"])
                         route_flights["destination"] = next_dest
                         route_flights["total_price"] += next_flight[3] * bags
                         route_flights["travel_time"] = str(next_flight[2]-dt.fromisoformat(route_flights["flights"][0]["departure"]))
                         airport_flights.append(route_planner(route_flights, next_dest, upd_adj_dict))
         return airport_flights
+
+def flatten(l):
+    if isinstance(l, list):
+        for v in l:
+            yield from flatten(v)
+    else:
+        yield l
 
 ds_file = sys.argv[1]
 dep = sys.argv[2]
@@ -64,7 +70,7 @@ with open(ds_file, "r") as f:
                 r'(\d+(\.\d+)?),'\
                 r'(\d+(\.\d+)?),'\
                 r'(\d+)'\
-                r'\n'\
+                r'(\n)?'\
                 , line
                 )
             assert record != None, "Input data does not follow convention described in README"
@@ -98,12 +104,16 @@ for dest, flights in adj_dict[dep].items():
         }
         total_flights.append(route_planner(route_flights_init,dest,adj_dict))
 output_flights = []
-for flight in total_flights:
-    try:
-        if flight["destination"] == arr:
-            output_flights.append(flight)
-    except TypeError:
+for flight in flatten(total_flights):
+    if flight["destination"] != arr or len(flight) == 0:
         continue
+    else:
+        output_flights.append(flight)
+
+    # except TypeError:
+    #     output_flights.append(flight)
+    # finally:
+    #     if len(flight) != 0:
 
 
-print(output_flights)   
+print(dumps(sorted(output_flights,key=lambda x:x["total_price"]),indent="\t"))
