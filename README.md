@@ -1,136 +1,131 @@
-# Python weekend entry task
+# Python weekend entry task -- Bálint Décsi
 
-**Write a python script/module/package, that for a given flight data in a form of `csv` file (check the examples), prints out a structured list of all flight combinations for a selected route between airports A -> B, sorted by the final price for the trip.**
+**Hi! This is my proposed solution for the entry task. In the following, I briefly describe its logic.**
 
-### Description
-You've been provided with some semi-randomly generated example csv datasets you can use to test your solution. The datasets have following columns:
-- `flight_no`: Flight number.
-- `origin`, `destination`: Airport codes.
-- `departure`, `arrival`: Dates and times of the departures/arrivals.
-- `base_price`, `bag_price`: Prices of the ticket and one piece of baggage.
-- `bags_allowed`: Number of allowed pieces of baggage for the flight.
+The first step is to create a graph represented by an adjacency list, or more precisely, dictionary. The nodes are the flights (represented as tuples) and they are connected if the second one can be reached in a given airport arriving with the first one and also considering the layover rule; thus the edges are directed. 
 
-In addition to the dataset, your script will take some additional arguments as input:
+Secondly, basicly a depth-first search is performed on the graph with a recursive generator (`plan_route`) repeatedly checking for restrictions (i.e. the already visited airports or the number of bags) and taking into consideration if the current flight is returning or not.
 
-| Argument name | type    | Description              | Notes                        |
-|---------------|---------|--------------------------|------------------------------|
-| `origin`      | string  | Origin airport code      |                              |
-| `destination` | string  | Destination airport code |                              |
+I could imagine improving the script with departure and return dates of the trip because it is more practical and as of now, for large datasets it can take a while combining all possible return trips with departure trips.
 
-### Search restrictions
-- By default you're performing search on ALL available combinations, according to search parameters.
-- In case of a combination of A -> B -> C, the layover time in B should **not be less than 1 hour and more than 6 hours**.
-- No repeating airports in the same trip!
-    - A -> B -> A -> C is not a valid combination for search A -> C.
-- Output is sorted by the final price of the trip.
+If you have any questions, please don't hesitate to contact me.
 
-#### Optional arguments
-You may add any number of additional search parameters to boost your chances to attend. Here are 2 recommended ones:
+### Function description
+`balintdecsi_solution.py` has the following parameters:
 
-| Argument name | type    | Description              | Notes                        |
-|---------------|---------|--------------------------|------------------------------|
-| `bags`        | integer | Number of requested bags | Optional (defaults to 0)     |
-| `return`      | boolean | Is it a return flight?   | Optional (defaults to false) |
+#### positional arguments:
+- `dataset`             path to the dataset that stores the flight data in a csv format
+- `departure`           airport to depart from
+- `arrival`             airport to arrive to
 
-##### Performing return trip search
-Example input (assuming `solution.py` is the main module):
-```
-python -m solution example/example0.csv RFZ WIW --bags=1 --return
-```
-will perform a search RFZ -> WIW -> RFZ for flights which allow at least 1 piece of baggage.
+#### optional arguments:
+- `-h`, `--help`        show the help message and exit
+- `--bags`              the number of checked bags, up to 10
+- `--returns`           optional flag if the trip is not one-way
 
-- **NOTE:** Since WIW is in this case the final destination for one part of the trip, the layover rule does not apply.
+### Returns
+The script creates an output file `balintdecsi_output.json` in the current working directory. The output follows the schema shown in the task description.
 
-#### Output
-The output will be a json-compatible structured list of trips sorted by price. The trip has the following schema:
-| Field          | Description                                                   |
-|----------------|---------------------------------------------------------------|
-| `flights`      | A list of flights in the trip according to the input dataset. |
-| `origin`       | Origin airport of the trip.                                   |
-| `destination`  | The final destination of the trip.                            |
-| `bags_allowed` | The number of allowed bags for the trip.                      |
-| `bags_count`   | The searched number of bags.                                  |
-| `total_price`  | The total price for the trip.                                 |
-| `travel_time`  | The total travel time.                                        |
+### Input dataset format
+The input dataset must have a header and otherwise follow the pattern of the provided example files.
 
-**For more information, check the example section.**
-
-### Points of interest
-Assuming your solution is working, we'll be additionally judging based on following skills:
-- input, output - what if we input garbage?
-- modules, packages & code structure (hint: it's easy to overdo it)
-- usage of standard library and built-in data structures
-- code readability, clarity, used conventions, documentation and comments
-
-## Requirements and restrictions
-- **Your solution needs to contain a README file describing what it does and how to run it.**
-- Only the standard library is allowed, no 3rd party packages, notebooks, specialized distros (Conda) etc.
-- The code should run as is, no environment setup should be required.
-
-## Submissions
-Follow the instructions you received in the email.
-
-## Example behaviour
-
-Let's imagine we wrote our solution into one file, `solution.py` and our datatset is in `data.csv`.
-We want to test the script by performing a flight search on route BTW -> REJ (we know the airports are present in the dataset) with one bag. We run the thing:
-
+### Sample behaviour
+Let's assume we run the following:
 ```bash
-python -m solution data.csv BTW REJ --bags=1
+python3 -m balintdecsi_solution example/example0.csv RFZ WIW --bags=2 --returns
 ```
-and get the following result:
-
+The expected result is this:
 ```json
 [
-    {
-        "flights": [
-            {
-                "flight_no": "XC233",
-                "origin": "BTW",
-                "destination": "WTF",
-                "departure": "2021-09-02T05:50:00",
-                "arrival": "2021-09-02T8:20:00",
-                "base_price": 67.0,
-                "bag_price": 7.0,
-                "bags_allowed": 2
-            },
-            {
-                "flight_no": "VJ832",
-                "origin": "WTF",
-                "destination": "REJ",
-                "departure": "2021-09-02T11:05:00",
-                "arrival": "2021-09-02T12:45:00",
-                "base_price": 31.0,
-                "bag_price": 5.0,
-                "bags_allowed": 1
-            }
-        ],
-        "bags_allowed": 1,
-        "bags_count": 1,
-        "destination": "REJ",
-        "origin": "BTW",
-        "total_price": 110.0,
-        "travel_time": "6:55:00"
-    },
-    {
-        "flights": [
-            {
-                "flight_no": "JV042",
-                "origin": "BTW",
-                "destination": "REJ",
-                "departure": "2021-09-01T17:35:00",
-                "arrival": "2021-09-01T21:05:00",
-                "base_price": 216.0,
-                "bag_price": 11.0,
-                "bags_allowed": 2
-            }
-        ],
-        "bags_allowed": 2,
-        "bags_count": 1,
-        "destination": "REJ",
-        "origin": "BTW",
-        "total_price": 227.0,
-        "travel_time": "3:30:00"
-    }
+	{
+		"flights": [
+			{
+				"flight_no": "ZH214",
+				"origin": "RFZ",
+				"destination": "WIW",
+				"departure": "2021-09-02T05:50:00",
+				"arrival": "2021-09-02T10:20:00",
+				"base_price": 168.0,
+				"bag_price": 12.0,
+				"bags_allowed": 2
+			},
+			{
+				"flight_no": "ZH214",
+				"origin": "WIW",
+				"destination": "RFZ",
+				"departure": "2021-09-04T23:20:00",
+				"arrival": "2021-09-05T03:50:00",
+				"base_price": 168.0,
+				"bag_price": 12.0,
+				"bags_allowed": 2
+			}
+		],
+		"bags_allowed": 2,
+		"bags_count": 2,
+		"destination": "RFZ",
+		"origin": "RFZ",
+		"total_price": 384.0,
+		"travel_time": "2 days, 22:00:00"
+	},
+	{
+		"flights": [
+			{
+				"flight_no": "ZH214",
+				"origin": "RFZ",
+				"destination": "WIW",
+				"departure": "2021-09-02T05:50:00",
+				"arrival": "2021-09-02T10:20:00",
+				"base_price": 168.0,
+				"bag_price": 12.0,
+				"bags_allowed": 2
+			},
+			{
+				"flight_no": "ZH214",
+				"origin": "WIW",
+				"destination": "RFZ",
+				"departure": "2021-09-09T23:20:00",
+				"arrival": "2021-09-10T03:50:00",
+				"base_price": 168.0,
+				"bag_price": 12.0,
+				"bags_allowed": 2
+			}
+		],
+		"bags_allowed": 2,
+		"bags_count": 2,
+		"destination": "RFZ",
+		"origin": "RFZ",
+		"total_price": 384.0,
+		"travel_time": "7 days, 22:00:00"
+	},
+	{
+		"flights": [
+			{
+				"flight_no": "ZH214",
+				"origin": "RFZ",
+				"destination": "WIW",
+				"departure": "2021-09-05T05:50:00",
+				"arrival": "2021-09-05T10:20:00",
+				"base_price": 168.0,
+				"bag_price": 12.0,
+				"bags_allowed": 2
+			},
+			{
+				"flight_no": "ZH214",
+				"origin": "WIW",
+				"destination": "RFZ",
+				"departure": "2021-09-09T23:20:00",
+				"arrival": "2021-09-10T03:50:00",
+				"base_price": 168.0,
+				"bag_price": 12.0,
+				"bags_allowed": 2
+			}
+		],
+		"bags_allowed": 2,
+		"bags_count": 2,
+		"destination": "RFZ",
+		"origin": "RFZ",
+		"total_price": 384.0,
+		"travel_time": "4 days, 22:00:00"
+	}
 ]
 ```
