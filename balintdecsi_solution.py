@@ -84,7 +84,7 @@ def add_flight(
             "departure": flight_to_add[3].isoformat(),
             "arrival": flight_to_add[4].isoformat(),
             "base_price": flight_to_add[5],
-            "bag_price": flight_to_add[6] * bags,
+            "bag_price": flight_to_add[6],
             "bags_allowed": flight_to_add[7]
         })
     flight_combination["bags_allowed"] = min(flight_to_add[7],flight_combination["bags_allowed"])
@@ -164,8 +164,9 @@ if __name__ == '__main__':
         "--bags",
         action="store",
         nargs=1,
+        default=[0],
         type=int,
-        choices=[i for i in range(1,11)],
+        choices=[i for i in range(0,11)],
         help="the number of checked bags, up to 10")
     parser.add_argument(
         "--returns",

@@ -1,0 +1,18 @@
+usage: balintdecsi_solution.py [-h] [--bags {0,1,2,3,4,5,6,7,8,9,10}]
+                               [--returns]
+                               dataset departure arrival
+
+Bálint Décsi's solution for the entry task to Kiwi.com Python Weekend in
+Budapest. For detailed description, please see README.
+
+positional arguments:
+  dataset               path to the dataset that stores the flight data in a
+                        csv format
+  departure             airport to depart from
+  arrival               airport to arrive to
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --bags {0,1,2,3,4,5,6,7,8,9,10}
+                        the number of checked bags, up to 10
+  --returns             optional flag if the trip is not one-way
