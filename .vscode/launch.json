@@ -10,10 +10,13 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "args": {
-                "examples\\example0.csv"
-                
-            }
+            "args": [
+                "example\\example3.csv",
+                "WUE",
+                "EZO",
+                "1",
+                "True"
+            ]
         }
     ]
 }
