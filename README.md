@@ -1,8 +1,3 @@
-# Ideas for the final README file
-limitations - return flight travel time
-
-
-
 # Python weekend entry task -- Bálint Décsi
 
 **Hi! This is my proposed solution for the entry task. In the following, I briefly describe its logic.**
@@ -11,7 +6,7 @@ The first step is to create a graph represented by an adjacency list, or more pr
 
 Secondly, basicly a depth-first search is performed on the graph with a recursive generator (`plan_route`) repeatedly checking for restrictions (i.e. the already visited airports or the number of bags) and taking into consideration if the current flight is returning or not.
 
-I could imagine improving the script with departure and return dates of the trip because as of now, for large datasets it can take a while combining all possible return trips wit hdeparture trips.
+I could imagine improving the script with departure and return dates of the trip because it is more practical and as of now, for large datasets it can take a while combining all possible return trips with departure trips.
 
 If you have any questions, please don't hesitate to contact me.
 
@@ -39,7 +34,7 @@ Let's assume we run the following:
 ```bash
 python3 -m balintdecsi_solution example/example0.csv RFZ WIW --bags=2 --returns
 ```
-The expected result should be this:
+The expected result is this:
 ```json
 [
 	{
