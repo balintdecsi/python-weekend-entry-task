@@ -5,15 +5,17 @@ limitations - return flight travel time
 
 # Python weekend entry task -- Bálint Décsi
 
-**Hi! This my propsed solution for the entry task.**
+**Hi! This my proposed solution for the entry task.**
 
 ### Function description
 `balintdecsi_solution.py` has the following parameters:
-positional arguments:
+
+#### positional arguments:
 - `dataset`             path to the dataset that stores the flight data in a csv format
 - `departure`           airport to depart from
 - `arrival`             airport to arrive to
-optional arguments:
+
+#### optional arguments:
 - `-h`, `--help`        show the help message and exit
 - `--bags`              the number of checked bags, up to 10
 - `--returns`           optional flag if the trip is not one-way
