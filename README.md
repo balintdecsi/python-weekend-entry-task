@@ -5,7 +5,15 @@ limitations - return flight travel time
 
 # Python weekend entry task -- Bálint Décsi
 
-**Hi! This my proposed solution for the entry task.**
+**Hi! This is my proposed solution for the entry task. In the following, I briefly describe its logic.**
+
+The first step is to create a graph represented by an adjacency list, or more precisely, dictionary. The nodes are the flights (represented as tuples) and they are connected if the second one can be reached in a given airport arriving with the first one and also considering the layover rule; thus the edges are directed. 
+
+Secondly, basicly a depth-first search is performed on the graph with a recursive generator (`plan_route`) repeatedly checking for restrictions (i.e. the already visited airports or the number of bags) and taking into consideration if the current flight is returning or not.
+
+I could imagine improving the script with departure and return dates of the trip because as of now, for large datasets it can take a while combining all possible return trips wit hdeparture trips.
+
+If you have any questions, please don't hesitate to contact me.
 
 ### Function description
 `balintdecsi_solution.py` has the following parameters:
@@ -21,7 +29,7 @@ limitations - return flight travel time
 - `--returns`           optional flag if the trip is not one-way
 
 ### Returns
-The script creates an output file `balintdecsi_output.json` in the working directory. The output follows the schema shown in the task description.
+The script creates an output file `balintdecsi_output.json` in the current working directory. The output follows the schema shown in the task description.
 
 ### Input dataset format
 The input dataset must have a header and otherwise follow the pattern of the provided example files.
