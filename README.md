@@ -24,10 +24,10 @@ If you have any questions, please don't hesitate to contact me.
 - `--returns`           optional flag if the trip is not one-way
 
 ### Returns
-The script creates an output file `balintdecsi_output.json` in the current working directory. The output follows the schema shown in the task description.
+The script writes the output to stdout. The output follows the schema shown in the task description.
 
-### Input dataset format
-The input dataset must have a header and otherwise follow the pattern of the provided example files.
+### Input dataset constraints
+The input dataset must have at least 22 rows (it is for automatic detection of header row) and otherwise follow the pattern of the provided example files.
 
 ### Sample behaviour
 Let's assume we run the following:
