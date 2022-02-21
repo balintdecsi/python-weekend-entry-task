@@ -48,7 +48,7 @@ def make_adj_dict(sorted_flight_list):
                     (next_flight[3] > (curr_flight[4] + td(hours=1)) and
                     next_flight[3] < (curr_flight[4] + td(hours=6)))):
                 flight_adj_dict[curr_flight].append(next_flight)
-                
+
     return flight_adj_dict
 
 
