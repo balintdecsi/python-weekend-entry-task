@@ -82,14 +82,11 @@ def add_flight(
 
 
 def plan_route(
-        arr,
+        dep, arr, prev_dest,
         bags,
-        prev_dest,
-        flight_adj_dict,
-        flight_adjs,
+        flight_adj_dict, flight_adjs,
         flight_combination,
-        returns,
-        returning):
+        returns, returning):
     """
     Recursive generator that populates all possible routes from the given airport to the given arrival airport using flight data from the given dataset.
 
@@ -104,7 +101,9 @@ def plan_route(
     returning -- logical value indicating if this is a returning part of a return trip
     """
     for curr_flight, next_flights in flight_adjs.items():
-        if (curr_flight[1] != prev_dest) or (curr_flight[7] < bags):
+        if (curr_flight[1] != prev_dest or
+                curr_flight[7] < bags or
+                curr_flight[2] == dep):
             continue
         elif not returning:
             if curr_flight[2] in map(lambda x: x["origin"], flight_combination["flights"]):
@@ -117,7 +116,8 @@ def plan_route(
         if curr_flight[2] == arr:
             if returns:
                 return_flight_adj_dict = make_adj_dict(list(filter(lambda x: x[3] > curr_flight[4], all_flights)))
-                yield from plan_route(dep, bags, arr,
+                yield from plan_route(arr, dep, arr,
+                                        bags,
                                         return_flight_adj_dict, return_flight_adj_dict,
                                         deepcopy(curr_flight_combination),
                                         False, True)
@@ -125,7 +125,8 @@ def plan_route(
                 yield curr_flight_combination
         else:
             for next_flight in next_flights:
-                yield from plan_route(arr, bags, curr_flight[2],
+                yield from plan_route(dep, arr, curr_flight[2],
+                                        bags,
                                         flight_adj_dict, {k: v for k, v in flight_adj_dict.items() if k == next_flight},
                                         deepcopy(curr_flight_combination),
                                         returns, returning)
@@ -193,8 +194,9 @@ if __name__ == '__main__':
     }
 
     for route in plan_route(
-            arr,bags,dep,
-            all_flights_adj_dict,all_flights_adj_dict,
+            dep, arr, dep,
+            bags,
+            all_flights_adj_dict, all_flights_adj_dict,
             init_flight_combination,
             returns, False):
         route |= {"destination": arr}
