@@ -62,7 +62,7 @@ The expected result is this:
 		],
 		"bags_allowed": 2,
 		"bags_count": 2,
-		"destination": "RFZ",
+		"destination": "WIW",
 		"origin": "RFZ",
 		"total_price": 384.0,
 		"travel_time": "2 days, 22:00:00"
@@ -92,7 +92,7 @@ The expected result is this:
 		],
 		"bags_allowed": 2,
 		"bags_count": 2,
-		"destination": "RFZ",
+		"destination": "WIW",
 		"origin": "RFZ",
 		"total_price": 384.0,
 		"travel_time": "7 days, 22:00:00"
@@ -122,10 +122,11 @@ The expected result is this:
 		],
 		"bags_allowed": 2,
 		"bags_count": 2,
-		"destination": "RFZ",
+		"destination": "WIW",
 		"origin": "RFZ",
 		"total_price": 384.0,
 		"travel_time": "4 days, 22:00:00"
 	}
 ]
+
 ```
