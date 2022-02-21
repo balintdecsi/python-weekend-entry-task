@@ -11,7 +11,7 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "args": [
-                "example\\example0.csv",
+                "example\\example4.csv",
                 "WIW",
                 "ECV",
                 "--bags=1",
