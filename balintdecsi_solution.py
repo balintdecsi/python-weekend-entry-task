@@ -1,6 +1,5 @@
 import argparse
 from csv import Sniffer, DictReader
-import re
 from datetime import datetime as dt, timedelta as td
 from copy import deepcopy
 from json import dumps
